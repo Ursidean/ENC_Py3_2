@@ -133,44 +133,31 @@ def seed_rules2(omap, amap, mask, max_distance, luc_names, luc, act, pas,
             key = "from " + luc_names[j] + " to " + luc_names[i + pas]
             # If a self-influence rule, set the self-influence attraction values.
             if i + pas == j:
-                for c in range(1, 3):
-                    if c == 1:
-                        if att_rules[j, i] == 1:
-                            if log_data_ef[c, j, i] > high_ef:
-                                rules[key][c] = d1_high_st_value
-                            elif log_data_ef[c, j, i] > mid_ef:
-                                rules[key][c] = d1_mid_st_value
-                            else:
-                                rules[key][c] = d1_low_st_value
-                    elif c == 2:
-                        if att_rules[j, i] == 1:
-                            if log_data_ef[c, j, i] > high_ef:
-                                rules[key][c] = d2_high_st_value
-                            elif log_data_ef[c, j, i] > mid_ef:
-                                rules[key][c] = d2_mid_st_value
-                            else:
-                                rules[key][c] = d2_low_st_value
+                if att_rules[j, i] == 1:
+                    if log_data_ef[1, j, i] > high_ef:
+                        rules[key][1] = d1_high_st_value
+                        rules[key][2] = d2_high_st_value
+                    elif log_data_ef[1, j, i] > mid_ef:
+                        rules[key][1] = d1_mid_st_value
+                        rules[key][2] = d2_mid_st_value
+                    else:
+                        rules[key][1] = d1_low_st_value
+                        rules[key][2] = d2_low_st_value
             # If a conversion rule, set the interactive attraction values.
             else:
                 if (
-                    att_rules[j, i] == 1 and log_data_ef[1, j, i] > 0
-                    and log_data_ef[2, j, i] > 0
+                                    att_rules[j, i] == 1 and log_data_ef[1, j, i] > 0
+                        and log_data_ef[2, j, i] > 0
                 ):
-                    for c in range(1, 3):
-                        if c == 1:
-                            if log_data_ef[c, j, i] > high_ef:
-                                rules[key][c] = d1_high_it_value
-                            elif log_data_ef[c, j, i] > mid_ef:
-                                rules[key][c] = d1_mid_it_value
-                            elif log_data_ef[c, j, i] > 0:
-                                rules[key][c] = d1_low_it_value
-                        elif c == 2:
-                            if log_data_ef[c, j, i] > high_ef:
-                                rules[key][c] = d2_high_it_value
-                            elif log_data_ef[c, j, i] > mid_ef:
-                                rules[key][c] = d2_mid_it_value
-                            elif log_data_ef[c, j, i] > 0:
-                                rules[key][c] = d2_low_it_value
+                    if log_data_ef[1, j, i] > high_ef:
+                        rules[key][1] = d1_high_it_value
+                        rules[key][2] = d2_high_it_value
+                    elif log_data_ef[1, j, i] > mid_ef:
+                        rules[key][1] = d1_mid_it_value
+                        rules[key][2] = d2_mid_it_value
+                    elif log_data_ef[1, j, i] > 0:
+                        rules[key][1] = d1_low_it_value
+                        rules[key][2] = d2_low_it_value
     # Set the end-points of each attraction rule
     for i in range(0, act):
         for j in range(0, luc):
@@ -179,6 +166,6 @@ def seed_rules2(omap, amap, mask, max_distance, luc_names, luc, act, pas,
             else:
                 # Specify the neighbourhood rule key.
                 key = "from " + luc_names[j] + " to " + luc_names[i + pas]
-                rules[key][3] = 5
+                rules[key][3] = max_distance
     # Return the rules.
     return rules

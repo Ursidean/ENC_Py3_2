@@ -31,9 +31,9 @@ import csv
 
 # Specify the base path to the directory containing the empirical neighbourhood
 # calibration tool-pack.
-base_path = "C:\\Users\\charl\OneDrive\\Documents\\ENC_Py3_1\\"
+base_path = "C:\\Users\\charl\OneDrive\\Documents\\ENC_Py3_2\\"
 # Set the case study
-case_study = "Madrid"
+case_study = "Berlin"
 # Set the paths to the directories and relevant data
 data_path = base_path + "EU_data\\"
 output_path = base_path + "EU_output\\"
@@ -160,7 +160,7 @@ base_seed = 1000
 max_runs = 1
 
 # Set the varied parameter. Must be one of theta_st, theta_cp or theta_it
-vp = "theta_it"
+vp = "theta_cp"
 # Set the fixed parameters.
 if vp == "theta_st":
     # Default fixed values.
@@ -323,44 +323,31 @@ for x in range(0, len(testing_range)):
             key = "from " + luc_names[j] + " to " + luc_names[i + pas]
             # If a self-influence rule, set the self-influence attraction values.
             if i + pas == j:
-                for c in range(1, 3):
-                    if c == 1:
-                        if att_rules[j, i] == 1:
-                            if log_data_ef[c, j, i] > high_ef:
-                                rules[key][c] = d1_high_st_value
-                            elif log_data_ef[c, j, i] > mid_ef:
-                                rules[key][c] = d1_mid_st_value
-                            else:
-                                rules[key][c] = d1_low_st_value
-                    elif c == 2:
-                        if att_rules[j, i] == 1:
-                            if log_data_ef[c, j, i] > high_ef:
-                                rules[key][c] = d2_high_st_value
-                            elif log_data_ef[c, j, i] > mid_ef:
-                                rules[key][c] = d2_mid_st_value
-                            else:
-                                rules[key][c] = d2_low_st_value
+                if att_rules[j, i] == 1:
+                    if log_data_ef[1, j, i] > high_ef:
+                        rules[key][1] = d1_high_st_value
+                        rules[key][2] = d2_high_st_value
+                    elif log_data_ef[1, j, i] > mid_ef:
+                        rules[key][1] = d1_mid_st_value
+                        rules[key][2] = d2_mid_st_value
+                    else:
+                        rules[key][1] = d1_low_st_value
+                        rules[key][2] = d2_low_st_value
             # If a conversion rule, set the interactive attraction values.
             else:
                 if (
                     att_rules[j, i] == 1 and log_data_ef[1, j, i] > 0
                     and log_data_ef[2, j, i] > 0
                 ):
-                    for c in range(1, 3):
-                        if c == 1:
-                            if log_data_ef[c, j, i] > high_ef:
-                                rules[key][c] = d1_high_it_value
-                            elif log_data_ef[c, j, i] > mid_ef:
-                                rules[key][c] = d1_mid_it_value
-                            elif log_data_ef[c, j, i] > 0:
-                                rules[key][c] = d1_low_it_value
-                        elif c == 2:
-                            if log_data_ef[c, j, i] > high_ef:
-                                rules[key][c] = d2_high_it_value
-                            elif log_data_ef[c, j, i] > mid_ef:
-                                rules[key][c] = d2_mid_it_value
-                            elif log_data_ef[c, j, i] > 0:
-                                rules[key][c] = d2_low_it_value
+                    if log_data_ef[1, j, i] > high_ef:
+                        rules[key][1] = d1_high_it_value
+                        rules[key][2] = d2_high_it_value
+                    elif log_data_ef[1, j, i] > mid_ef:
+                        rules[key][1] = d1_mid_it_value
+                        rules[key][2] = d2_mid_it_value
+                    elif log_data_ef[1, j, i] > 0:
+                        rules[key][1] = d1_low_it_value
+                        rules[key][2] = d2_low_it_value
     # Set the end-points of each attraction rule
     for i in range(0, act):
         for j in range(0, luc):
@@ -369,10 +356,8 @@ for x in range(0, len(testing_range)):
             else:
                 # Specify the neighbourhood rule key.
                 key = "from " + luc_names[j] + " to " + luc_names[i + pas]
-                # Iterate through to find end point
-                for c in range(2, 5):
-                    if att_rules[j, i] == 1 and log_data_ef[c, j, i] > 0:
-                        rules[key][3] = c + 1
+                # Set the end point
+                rules[key][3] = max_distance
     # Input the rules into the model.
     for i in range(0, luc):
         for j in range(0, act):
